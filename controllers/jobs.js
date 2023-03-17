@@ -1,10 +1,10 @@
 const Job = require("../models/Job");
-const { StatusCodes } = require("http-status-codes");
+const { StatusCode } = require("http-status-codes");
 const { BadRequestError, NotFoundError } = require("../errors");
 
 const getAllJobs = async (req, res) => {
   const jobs = await Job.find({ createdBy: req.user.userId }).sort("createdAt");
-  res.status(StatusCodes.OK).json({ jobs, count: jobs.length });
+  res.status(StatusCode.OK).json({ jobs, count: jobs.length });
 };
 
 const getJob = async (req, res) => {
@@ -16,13 +16,13 @@ const getJob = async (req, res) => {
   if (!job) {
     throw new NotFoundError(`No job with id ${job}`);
   }
-  res.status(StatusCodes.OK).json({ job });
+  res.status(StatusCode.OK).json({ job });
 };
 
 const createJob = async (req, res) => {
   req.body.createdBy = req.user.userId;
   const job = await Job.create(req.body);
-  res.status(StatusCodes.CREATED).json({ job });
+  res.status(StatusCode.CREATED).json({ job });
 };
 const updateJob = async (req, res) => {
   const {
@@ -44,7 +44,7 @@ const updateJob = async (req, res) => {
   if (!job) {
     throw new NotFoundError(`No job with id ${job}`);
   }
-  res.status(StatusCodes.OK).json({ job });
+  res.status(StatusCode.OK).json({ job });
 };
 
 const deleteJob = async (req, res) => {
@@ -61,7 +61,7 @@ const deleteJob = async (req, res) => {
   if (!job) {
     throw new NotFoundError(`No job with id ${job}`);
   }
-  res.status(StatusCodes.OK).send();
+  res.status(StatusCode.OK).send();
 };
 
 module.exports = {
