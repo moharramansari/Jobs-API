@@ -1,11 +1,11 @@
 const User = require("../models/User");
-const { StatusCodes } = require("http-status-codes");
+const { StatusCode } = require("http-status-codes");
 const { BadRequestError, UnauthenticatedError } = require("../errors");
 
 const register = async (req, res) => {
   const user = await User.create({ ...req.body });
   const token = await user.createJWT();
-  res.status(StatusCodes.CREATED).json({ user: { name: user.name }, token });
+  res.status(StatusCode.CREATED).json({ user: { name: user.name }, token });
 };
 
 const login = async (req, res) => {
@@ -23,7 +23,7 @@ const login = async (req, res) => {
     throw new UnauthenticatedError("Invalid cridential");  
 }
   const token = user.createJWT();
-  res.status(StatusCodes.OK).json({ user: { name: user.name }, token });
+  res.status(StatusCode.OK).json({ user: { name: user.name }, token });
 };
 
 module.exports = {
