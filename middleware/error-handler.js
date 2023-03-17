@@ -2,7 +2,7 @@ const { CustomAPIError } = require("../errors");
 const { StatusCodes } = require("http-status-codes");
 
 const errorHandlerMiddleware = (err, req, res, next) => {
-  let customerError = {
+  let customError = {
     //set default
     statusCode: err.StatusCode || StatusCodes.INTERNAL_SERVER_ERROR,
     msg: err.message || "Something went wrong please try again later",
@@ -14,20 +14,25 @@ const errorHandlerMiddleware = (err, req, res, next) => {
 
   if (err.name === "ValidationError") {
     console.log(Object.values(err.errors));
-    customerError.msg = Object.values(err.errors)
+    customError.msg = Object.values(err.errors)
       .map((itme) => itme.message)
       .join(",");
-    customerError.statusCode = 400;
+    customError.statusCode = 400;
   }
 
   if (err.code && err.code === 11000) {
-    customerError.msg = `Duplicate value entered for ${Object.keys(
+    customError.msg = `Duplicate value entered for ${Object.keys(
       err.keyValue
     )} field, Please choose another value`;
-    customerError.statusCode = 400;
+    customError.statusCode = 400;
+  }
+
+  if (err.name == "CastError") {
+    customError.msg = `No item found with id :${err.value}`;
+    customError.statusCode = 404;
   }
   //  return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ err });
-  return res.status(customerError.statusCode).json({ msg: customerError.msg });
+  return res.status(customError.statusCode).json({ msg: customError.msg });
 };
 
 module.exports = errorHandlerMiddleware;
